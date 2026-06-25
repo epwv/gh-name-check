@@ -1,8 +1,6 @@
 # gh-name-check
 
-[![gh](https://img.shields.io/badge/github-epwv/gh--name--check-000000?logo=github&labelColor=000000&style=for-the-badge)](https://github.com/epwv/gh-name-check)
 [![python](https://img.shields.io/badge/python-3.14-3776AB?logo=python&labelColor=000000&style=for-the-badge)](https://github.com/epwv/gh-name-check)
-[![works](https://img.shields.io/badge/works-sometimes-000000?logo=python&labelColor=000000&style=for-the-badge)](https://github.com/epwv/gh-name-check)
 
 includes generated username lists (`lists/`) and confirmed available names (`confirmed/`).
 
