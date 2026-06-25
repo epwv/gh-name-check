@@ -3,7 +3,7 @@
 includes generated username lists (`lists/`) and confirmed available names (`confirmed/`).
 
 this code is bad, buggy, and slightly vibecoded. it works (sometimes).
-butchered by **epwv**.
+original by **Kai Zhao**, butchered and extended by **epwv** with minor help from **opencode** (yes opencode, who on earth uses that, am i right?).
 
 you need your own proxies. find free ones or use your own.
 
