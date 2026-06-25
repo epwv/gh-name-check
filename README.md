@@ -1,5 +1,8 @@
 # gh-name-check
 
+[![github](https://img.shields.io/badge/-github-000000?logo=github&labelColor=000000&style=for-the-badge)](https://github.com/epwv/gh-name-check)
+[![python](https://img.shields.io/badge/-python-3776AB?logo=python&labelColor=000000&style=for-the-badge)](https://github.com/epwv/gh-name-check)
+
 includes generated username lists (`lists/`) and confirmed available names (`confirmed/`).
 
 this code is bad, buggy, and slightly vibecoded. it works (sometimes).
