@@ -22,6 +22,12 @@ batch-checks usernames from text files. turbo async — fires hundreds of reques
 - handles 429/403 with 5-10s backoff retry
 - ctrl+c prints a summary of checked/available/failed before exiting
 
+![checker proxy prompt](assets/checker-proxy-prompt.png)
+*checker asking about proxy usage on startup*
+
+![checker running](assets/checker-running.png)
+*checker batch-verifying usernames with live progress*
+
 ### generator.py
 generates random usernames and checks them on the fly.
 - follows configurable patterns (default: letter + 4 numbers)
@@ -30,6 +36,12 @@ generates random usernames and checks them on the fly.
 - adjustable delay between requests (menu option `a`)
 - speed menu: `a` to adjust delay, `f` to finish
 - ctrl+c prints a summary
+
+![generator menu](assets/generator-menu.png)
+*generator landing screen with options*
+
+![generator running](assets/generator-running.png)
+*generator creating and checking usernames live*
 
 ## First Run
 
@@ -87,14 +99,18 @@ github-checker/
 │   └── Home.md             documentation
 ├── .github/
 │   ├── 404.md              custom 404 page
-│   └── social.png          social preview image
+│   └── profile.png         social preview image
+├── assets/
+│   ├── preview.png          repo structure screenshot
+│   ├── checker-proxy-prompt.png
+│   ├── checker-running.png
+│   ├── generator-menu.png
+│   └── generator-running.png
 ├── lists/
 │   ├── 3_letter_usernames.txt
 │   └── 4_letter_usernames.txt
 ├── confirmed/
 │   └── available_confirmed.txt
-├── assets/
-│   └── preview.png          screenshot
 ├── proxies.txt             your proxy list (one per line)
 └── README.md
 ```
