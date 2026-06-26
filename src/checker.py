@@ -48,7 +48,6 @@ LDIR.mkdir(exist_ok=True)
 CDIR.mkdir(exist_ok=True)
 
 INPUTS = [
-    LDIR / "avaliable2usernames.txt",
     LDIR / "3_letter_usernames.txt",
     LDIR / "4_letter_usernames.txt",
 ]

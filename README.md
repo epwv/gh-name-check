@@ -26,7 +26,7 @@ batch-checks usernames from text files. turbo async — fires hundreds of reques
 generates random usernames and checks them on the fly.
 - follows configurable patterns (default: letter + 4 numbers)
 - checks each name immediately via the signup endpoint
-- saves available names to `lists/avaliable2usernames.txt`
+- saves available names to `lists/3_letter_usernames.txt` or `lists/4_letter_usernames.txt`
 - adjustable delay between requests (menu option `a`)
 - speed menu: `a` to adjust delay, `f` to finish
 - ctrl+c prints a summary
@@ -90,8 +90,7 @@ github-checker/
 │   └── social.png          social preview image
 ├── lists/
 │   ├── 3_letter_usernames.txt
-│   ├── 4_letter_usernames.txt
-│   └── avaliable2usernames.txt
+│   └── 4_letter_usernames.txt
 ├── confirmed/
 │   └── avaliable_confirmed.txt
 ├── proxies.txt             your proxy list (one per line)
