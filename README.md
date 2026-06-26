@@ -22,10 +22,10 @@ batch-checks usernames from text files. turbo async — fires hundreds of reques
 - handles 429/403 with 5-10s backoff retry
 - ctrl+c prints a summary of checked/available/failed before exiting
 
-![checker proxy prompt](assets/checker-proxy-prompt.png)
+<img src="assets/checker-proxy-prompt.png" width="500" alt="checker proxy prompt">
 *checker asking about proxy usage on startup*
 
-![checker running](assets/checker-running.png)
+<img src="assets/checker-running.png" width="500" alt="checker running">
 *checker batch-verifying usernames with live progress*
 
 ### generator.py
@@ -37,10 +37,10 @@ generates random usernames and checks them on the fly.
 - speed menu: `a` to adjust delay, `f` to finish
 - ctrl+c prints a summary
 
-![generator menu](assets/generator-menu.png)
+<img src="assets/generator-menu.png" width="500" alt="generator menu">
 *generator landing screen with options*
 
-![generator running](assets/generator-running.png)
+<img src="assets/generator-running.png" width="500" alt="generator running">
 *generator creating and checking usernames live*
 
 ## First Run
@@ -117,4 +117,4 @@ github-checker/
 
 this is how your cloned repo should look like:
 
-![preview](assets/preview.png)
+<img src="assets/preview.png" width="500" alt="preview">
