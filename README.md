@@ -12,7 +12,7 @@ original by **Kai Zhao**, butchered and extended by **epwv** with minor help fro
 
 you need your own proxies. find free ones or use your own.
 
-! before we start, here's what the program looks like etc in depth:
+! before we start, here's what the program looks like in depth:
 
 <img src="assets/preview.png" width="800" alt="preview">
 
