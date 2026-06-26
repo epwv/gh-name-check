@@ -93,6 +93,12 @@ github-checker/
 │   └── 4_letter_usernames.txt
 ├── confirmed/
 │   └── available_confirmed.txt
+├── assets/
+│   └── preview.png          screenshot
 ├── proxies.txt             your proxy list (one per line)
 └── README.md
 ```
+
+this is how your cloned repo should look like:
+
+![preview](assets/preview.png)
