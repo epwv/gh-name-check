@@ -92,7 +92,7 @@ github-checker/
 │   ├── 3_letter_usernames.txt
 │   └── 4_letter_usernames.txt
 ├── confirmed/
-│   └── avaliable_confirmed.txt
+│   └── available_confirmed.txt
 ├── proxies.txt             your proxy list (one per line)
 └── README.md
 ```

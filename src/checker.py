@@ -51,7 +51,7 @@ INPUTS = [
     LDIR / "3_letter_usernames.txt",
     LDIR / "4_letter_usernames.txt",
 ]
-OUTPUT = CDIR / "avaliable_confirmed.txt"
+OUTPUT = CDIR / "available_confirmed.txt"
 
 for f in INPUTS:
     f.touch(exist_ok=True)

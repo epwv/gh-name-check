@@ -38,6 +38,9 @@ cfg = json.loads(CFG_PATH.read_text())
 TOKEN = cfg.get("token", "")
 DELAY = cfg.get("delay", 0.5)
 
+LDIR = DIR / "lists"
+T3 = LDIR / "3_letter_usernames.txt"
+T4 = LDIR / "4_letter_usernames.txt"
 CH = "abcdefghijklmnopqrstuvwxyz0123456789"
 SIGNUP = "https://github.com/signup_check_new/username"
 
@@ -135,7 +138,7 @@ async def work(n, out):
             await asyncio.sleep(DELAY)
 
 async def main():
-    global DELAY, TOKEN, found, checked
+    global DELAY, found, checked
     while True:
         print(Fore.CYAN + "\ngithub username generator")
         print("  3  three-letter")
@@ -163,28 +166,26 @@ async def main():
             print(Fore.RED + "  invalid")
             continue
 
-        t3 = DIR / "lists" / "3_letter_usernames.txt"
-        t4 = DIR / "lists" / "4_letter_usernames.txt"
-        (DIR / "lists").mkdir(exist_ok=True)
+        LDIR.mkdir(exist_ok=True)
         found = 0
         checked = 0
 
         if c == "b":
-            print(f"  3 -> {t3}\n  4 -> {t4}\n")
-            t3.touch(exist_ok=True)
-            t4.touch(exist_ok=True)
+            print(f"  3 -> {T3}\n  4 -> {T4}\n")
+            T3.touch(exist_ok=True)
+            T4.touch(exist_ok=True)
             ws = [
-                asyncio.create_task(work(3, t3)),
-                asyncio.create_task(work(4, t4)),
+                asyncio.create_task(work(3, T3)),
+                asyncio.create_task(work(4, T4)),
             ]
         elif c == "4":
-            print(f"  4 -> {t4}\n")
-            t4.touch(exist_ok=True)
-            ws = [asyncio.create_task(work(4, t4))]
+            print(f"  4 -> {T4}\n")
+            T4.touch(exist_ok=True)
+            ws = [asyncio.create_task(work(4, T4))]
         else:
-            print(f"  3 -> {t3}\n")
-            t3.touch(exist_ok=True)
-            ws = [asyncio.create_task(work(3, t3))]
+            print(f"  3 -> {T3}\n")
+            T3.touch(exist_ok=True)
+            ws = [asyncio.create_task(work(3, T3))]
 
         try:
             await asyncio.gather(*ws)
