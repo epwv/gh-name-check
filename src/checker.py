@@ -16,23 +16,19 @@ DIR = Path(__file__).parent.parent
 CFG_PATH = DIR / "config" / "config.json"
 
 def setup():
-    print(Fore.CYAN + "\n── first time setup ──\n")
-    token = input("github token (optional, press enter to skip): ").strip()
-    proxies = input("path to proxy file (optional, press enter for default proxies.txt): ").strip()
-    delay = input("delay between requests in seconds (default 0.5): ").strip()
+    print(Fore.CYAN + "\nfirst time setup")
+    token = input("token (optional): ").strip()
+    proxy_path = input("proxy file (optional): ").strip()
+    delay = input("delay in seconds (default 0.5): ").strip()
     try:
         delay = float(delay) if delay else 0.5
-        if delay < 0:
-            delay = 0.5
     except:
         delay = 0.5
-    cfg = {
-        "token": token,
-        "delay": delay,
-        "proxies": proxies,
-    }
+    if delay < 0:
+        delay = 0.5
+    cfg = {"token": token, "delay": delay, "proxies": proxy_path}
     CFG_PATH.write_text(json.dumps(cfg, indent=2))
-    print(Fore.GREEN + "config.json saved. rerun the script.\n")
+    print(Fore.GREEN + "saved. rerun the script.")
     sys.exit(0)
 
 if not CFG_PATH.exists():
@@ -40,7 +36,6 @@ if not CFG_PATH.exists():
 
 cfg = json.loads(CFG_PATH.read_text())
 TOKEN = cfg.get("token", "") or os.environ.get("GITHUB_TOKEN", "")
-DELAY = cfg.get("delay", 0.5)
 
 LDIR = DIR / "lists"
 CDIR = DIR / "confirmed"
@@ -58,10 +53,7 @@ for f in INPUTS:
 OUTPUT.touch(exist_ok=True)
 
 PROX_PATH = cfg.get("proxies", "")
-if PROX_PATH:
-    PROX_FILE = Path(PROX_PATH).expanduser()
-else:
-    PROX_FILE = DIR / "proxies.txt"
+PROX_FILE = Path(PROX_PATH).expanduser() if PROX_PATH else DIR / "proxies.txt"
 
 SIGNUP = "https://github.com/signup_check_new/username"
 HIDDEN = re.compile(r"[\u00ad\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff\u00a0]")
@@ -136,12 +128,9 @@ def nextbatch():
 
 async def chk(sess, name, sem, proxy=None):
     async with sem:
-        ua = random.choice(UAS)
-        p = {"suggest_usernames": "true", "value": name}
-        h = {"User-Agent": ua}
         k = {
-            "params": p,
-            "headers": h,
+            "params": {"suggest_usernames": "true", "value": name},
+            "headers": {"User-Agent": random.choice(UAS)},
             "timeout": aiohttp.ClientTimeout(total=TIMEOUT),
         }
         if proxy:
@@ -158,14 +147,9 @@ async def chk(sess, name, sem, proxy=None):
         except:
             return None
 
-async def api(sess, name, sem, token, proxy=None):
+async def apichk(sess, name, sem, token, proxy=None):
     async with sem:
-        ua = random.choice(UAS)
-        h = {
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": ua,
-        }
+        h = {"User-Agent": random.choice(UAS)}
         if token:
             h["Authorization"] = f"Bearer {token}"
         k = {
@@ -192,7 +176,7 @@ async def check(sess, name, token, sem, prox, delay):
     await asyncio.sleep(delay)
     p = random.choice(prox) if prox else None
     if token:
-        r = await api(sess, name, sem, token, p)
+        r = await apichk(sess, name, sem, token, p)
         if r is not None and r != "limit":
             return name, r, "api"
     r = await chk(sess, name, sem, p)
@@ -205,15 +189,34 @@ async def check(sess, name, token, sem, prox, delay):
             return name, r, "signup"
     return name, None, "fail"
 
+def progress(done, total, avail, taken, unk, start):
+    el = time.monotonic() - start
+    rps = done / el if el > 0 else 0
+    eta = f"{(total - done) / rps:.0f}s" if rps > 0 else "?"
+    sys.stdout.write(
+        f"\r  {Fore.CYAN}{done}/{total}  {rps:.1f}/s  "
+        f"{Fore.GREEN}{len(avail)} avail  {Fore.RED}{taken} taken  "
+        f"{Fore.YELLOW}{len(unk)} unk  {Fore.CYAN}eta {eta}{Style.RESET_ALL}   "
+    )
+    sys.stdout.flush()
+
+def writeavail(name, method, bn, output):
+    print(Fore.GREEN + f"\n  {name} ({method})")
+    with open(output, "a") as f:
+        f.write(name + "\n")
+
+def batchhdr(output, bn):
+    with open(output, "a") as f:
+        f.write(f"\n# Batch {bn} - {datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
+
 def run():
     names = load()
     if not names:
         print("nothing to do")
         return
     prox = getprox()
-    tok = TOKEN
-    if tok:
-        print(Fore.CYAN + f"token loaded")
+    if TOKEN:
+        print(Fore.CYAN + "token loaded")
     if prox:
         ans = input(f"{len(prox)} proxies, use? [y/N]: ").strip().lower() == "y"
         if not ans:
@@ -225,7 +228,7 @@ def run():
         conn = aiohttp.TCPConnector(limit=0)
         timeout = aiohttp.ClientTimeout(total=TIMEOUT + 5)
         async with aiohttp.ClientSession(connector=conn, timeout=timeout) as sess:
-            tasks = [check(sess, u, tok, sem, prox, 0) for u in names]
+            tasks = [check(sess, u, TOKEN, sem, prox, 0) for u in names]
             avail = []
             taken = 0
             unk = []
@@ -240,57 +243,33 @@ def run():
                     done += 1
                     if res is True:
                         if not hdr:
-                            with open(OUTPUT, "a") as f:
-                                f.write(
-                                    f"\n# Batch {bn} - "
-                                    f"{datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
-                                )
+                            batchhdr(OUTPUT, bn)
                             hdr = True
                         avail.append(name)
-                        with open(OUTPUT, "a") as f:
-                            f.write(name + "\n")
-                        print(Fore.GREEN + f"\n  {name} ({method})")
+                        writeavail(name, method, bn, OUTPUT)
                     elif res is False:
                         taken += 1
                     else:
                         if method == "fail":
                             retry.append(name)
                         unk.append((name, method))
-                    el = time.monotonic() - start
-                    rps = done / el if el > 0 else 0
-                    eta = f"{(total - done) / rps:.0f}s" if rps > 0 else "?"
-                    sys.stdout.write(
-                        f"\r  {Fore.CYAN}{done}/{total}  {rps:.1f}/s  "
-                        f"{Fore.GREEN}{len(avail)} avail  {Fore.RED}{taken} taken  "
-                        f"{Fore.YELLOW}{len(unk)} unk  {Fore.CYAN}eta {eta}{Style.RESET_ALL}   "
-                    )
-                    sys.stdout.flush()
+                    progress(done, total, avail, taken, unk, start)
+
                 if retry:
                     print(Fore.YELLOW + f"\n  retry {len(retry)}")
-                    tasks2 = [
-                        check(sess, u, tok, sem, prox, 1.0) for u in retry
-                    ]
+                    tasks2 = [check(sess, u, TOKEN, sem, prox, 1.0) for u in retry]
                     retry = []
                     for coro in asyncio.as_completed(tasks2):
                         name, res, method = await coro
                         done += 1
                         if res is True:
                             avail.append(name)
-                            with open(OUTPUT, "a") as f:
-                                f.write(name + "\n")
-                            print(Fore.GREEN + f"\n  {name} ({method})")
+                            writeavail(name, method, bn, OUTPUT)
                         elif res is False:
                             taken += 1
                         else:
                             unk.append((name, method))
-                        el = time.monotonic() - start
-                        rps = done / el if el > 0 else 0
-                        sys.stdout.write(
-                            f"\r  {Fore.CYAN}{done}/{total}  {rps:.1f}/s  "
-                            f"{Fore.GREEN}{len(avail)} avail  {Fore.RED}{taken} taken  "
-                            f"{Fore.YELLOW}{len(unk)} unk  {Fore.CYAN}eta {eta}{Style.RESET_ALL}   "
-                        )
-                        sys.stdout.flush()
+                        progress(done, total, avail, taken, unk, start)
             except KeyboardInterrupt:
                 pass
             el = time.monotonic() - start
