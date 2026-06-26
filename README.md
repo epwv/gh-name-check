@@ -12,6 +12,12 @@ original by **Kai Zhao**, butchered and extended by **epwv** with minor help fro
 
 you need your own proxies. find free ones or use your own.
 
+! before we start, here's what the program looks like etc in depth:
+
+<img src="assets/preview.png" width="800" alt="preview">
+
+*this is what your cloned repo should look like*
+
 ## Scripts
 
 ### checker.py
@@ -115,6 +121,4 @@ github-checker/
 └── README.md
 ```
 
-this is how your cloned repo should look like:
 
-<img src="assets/preview.png" width="500" alt="preview">
